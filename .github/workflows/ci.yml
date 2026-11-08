@@ -5,11 +5,22 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test-and-build:
     runs-on: ubuntu-latest
     steps:
-      - name: Скачиваем код репозитория
+      - name: Скачиваем код
         uses: actions/checkout@v4
 
-      - name: Собираем Docker-образ нашего Питона
+      - name: Устанавливаем Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Устанавливаем зависимости
+        run: pip install -r requirements.txt
+
+      - name: Запускаем тесты (Pytest)
+        run: pytest test_app.py
+
+      - name: Собираем Docker Compose
         run: docker compose build
